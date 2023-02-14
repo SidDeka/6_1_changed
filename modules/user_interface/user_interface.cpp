@@ -14,6 +14,7 @@
 #include "gas_sensor.h"
 #include "matrix_keypad.h"
 #include "display.h"
+#include "ServoMotor.h"
 
 //=====[Declaration of private defines]========================================
 
@@ -30,6 +31,8 @@ DigitalOut systemBlockedLed(LED2);
 
 //=====[Declaration and initialization of public global variables]=============
 char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
+char pressed[5];
+
 
 //=====[Declaration and initialization of private global variables]============
 
@@ -109,6 +112,7 @@ static void userInterfaceMatrixKeypadUpdate()
     static int numTries_init = 1;
     static int pos_x = 11;
     static int pressed_pos = 0;
+   
 
 
     if(numTries_init > 0)
@@ -119,6 +123,13 @@ static void userInterfaceMatrixKeypadUpdate()
          displayStringWrite( str1);
          numTries_init = numTries_init - 1;
     }
+
+    
+    char str2[10];
+    sprintf(str2, "%d", numTries);
+    displayCharPositionWrite( 10,1 );
+    displayStringWrite( str2);
+
 
     if(numTries <= 0){
         
@@ -137,8 +148,7 @@ static void userInterfaceMatrixKeypadUpdate()
     if( keyReleased != '\0' ) 
     {
 
-         char pressed[5];
-         
+  
          pressed[4] = '\0';
          pressed[pressed_pos] = keyReleased;
          pressed_pos++;
@@ -151,17 +161,21 @@ static void userInterfaceMatrixKeypadUpdate()
          displayStringWrite(str3);
          pos_x++;
         
-         if((codeMatchFrom(CODE_KEYPAD) == true) && (pressed[4] == '#'))
+         if((new_code_correct(pressed) == true) && (pressed[4] == '#' ))
          {
             clear_screen();
             displayCharPositionWrite ( 0,0 );
             displayStringWrite( "Gate opening" );
-            numTries = 3;
+            servo_update(pressed);
+            userInterfaceDisplayInit();
+            numTries_init = 1;
+            pressed_pos = 0;
+            pos_x = 11;
             
          }
 
 
-         if((codeMatchFrom(CODE_KEYPAD)  == false) && (pressed[4] != '\0')){
+         if((new_code_correct(pressed) == false) && (pressed[4] != '\0')){
              numTries = numTries -1;
              pos_x = 11;
              pressed_pos = 0;
@@ -184,10 +198,6 @@ static void userInterfaceMatrixKeypadUpdate()
          }
 
 
-         char str2[10];
-         sprintf(str2, "%d", numTries);
-         displayCharPositionWrite ( 10,1 );
-         displayStringWrite( str2);
 
 
 

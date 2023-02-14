@@ -45,7 +45,7 @@ void smartHomeSystemUpdate()
     fireAlarmUpdate();    
     pcSerialComUpdate();
     eventLogUpdate();
-    servo_update();
+ 
     delay(SYSTEM_TIME_INCREMENT_MS);
 }
 

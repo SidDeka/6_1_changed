@@ -23,6 +23,7 @@
 extern char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
 extern char codeSequenceFromPcSerialCom[CODE_NUMBER_OF_KEYS];
 
+
 //=====[Declaration and initialization of private global variables]============
 
 static int numberOfIncorrectCodes = 0;
@@ -87,6 +88,15 @@ bool codeMatchFrom( codeOrigin_t codeOrigin )
     return codeIsCorrect;
 }
 
+bool new_code_correct(char arr[]){
+    bool code_correct = true;
+    for(int i = 0; i < 4; i++){
+        if (arr[i] != codeSequence[i]){
+            code_correct = false;
+        }
+    }
+    return code_correct;
+}
 
 //=====[Implementations of private functions]==================================
 
