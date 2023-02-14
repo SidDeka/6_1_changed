@@ -87,6 +87,7 @@ bool codeMatchFrom( codeOrigin_t codeOrigin )
     return codeIsCorrect;
 }
 
+
 //=====[Implementations of private functions]==================================
 
 static bool codeMatch( char* codeToCompare )
@@ -105,4 +106,8 @@ static void codeDeactivate()
     systemBlockedStateWrite(OFF);
     incorrectCodeStateWrite(OFF);
     numberOfIncorrectCodes = 0;
+}
+
+char* returnCode(){
+    return codeSequence;
 }

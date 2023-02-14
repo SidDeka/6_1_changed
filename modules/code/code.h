@@ -18,7 +18,7 @@ typedef enum{
 
 void codeWrite( char* newCodeSequence );
 bool codeMatchFrom( codeOrigin_t codeOrigin );
-
+char* returnCode();
 //=====[#include guards - end]=================================================
 
 #endif // _CODE_H_
