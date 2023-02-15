@@ -2,7 +2,6 @@
 #include "arm_book_lib.h"
 #include "ServoMotor.h"
 #include "code.h"
-#include "matrix_keypad.h"
 
 
 #define DUTY_MIN 0.025 // 0 degree at start min
