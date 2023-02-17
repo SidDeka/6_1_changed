@@ -10,7 +10,7 @@
 #include "date_and_time.h"
 #include "temperature_sensor.h"
 #include "gas_sensor.h"
-#include "matrix_keypad.h"
+//#include "matrix_keypad.h"
 
 //=====[Declaration of private defines]========================================
 
@@ -98,6 +98,10 @@ bool new_code_correct(char arr[]){
     return code_correct;
 }
 
+char* returnCode(){
+    return codeSequence;
+}
+
 //=====[Implementations of private functions]==================================
 
 static bool codeMatch( char* codeToCompare )
@@ -118,6 +122,3 @@ static void codeDeactivate()
     numberOfIncorrectCodes = 0;
 }
 
-char* returnCode(){
-    return codeSequence;
-}

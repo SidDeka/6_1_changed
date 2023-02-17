@@ -109,20 +109,20 @@ static void userInterfaceMatrixKeypadUpdate()
     char keyReleased = matrixKeypadUpdate();
 
     static int numTries = 3;
-    static int numTries_init = 1;
+    // static int numTries_init = 1;
     static int pos_x = 11;
     static int pressed_pos = 0;
    
 
 
-    if(numTries_init > 0)
-    {
-         char str1[10];
-         sprintf(str1, "%d", numTries);
-         displayCharPositionWrite ( 10,1 );
-         displayStringWrite( str1);
-         numTries_init = numTries_init - 1;
-    }
+    // if(numTries_init > 0)
+    // {
+    //      char str1[10];
+    //      sprintf(str1, "%d", numTries);
+    //      displayCharPositionWrite ( 10,1 );
+    //      displayStringWrite( str1);
+    //      numTries_init = numTries_init - 1;
+    // }
 
     
     char str2[10];
@@ -168,7 +168,7 @@ static void userInterfaceMatrixKeypadUpdate()
             displayStringWrite( "Gate opening" );
             servo_update(pressed);
             userInterfaceDisplayInit();
-            numTries_init = 1;
+            numTries = 3;
             pressed_pos = 0;
             pos_x = 11;
             
