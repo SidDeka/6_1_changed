@@ -2,12 +2,8 @@
 
 02/16/23
 
-Changes made to Code module
-Changes made to PC serial communication module
-Changes made to display module
-Addition of the servo motor module
-Changes made to smart home system module
-Changes made to user interface module
+Changes made to Code module, PC serial communication module, display module. Addition of the servo motor module.
+Changes made to smart home system module and user interface module.
 
 
 Purpose of the code:
