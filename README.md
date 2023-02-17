@@ -1,5 +1,10 @@
 # Project 2 readme
-making changes to display module for chapter 6 questions
 
-8th of february 2023
-Changes made to user_interface.cpp in function userInterfaceDisplayUpdate()
+02/16/23
+
+Changes made to Code module
+Changes made to PC serial communication module
+Changes made to display module
+Addition of the servo motor module
+Changes made to smart home system module
+Changes made to user interface module
