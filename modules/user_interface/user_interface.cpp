@@ -14,7 +14,9 @@
 #include "gas_sensor.h"
 #include "matrix_keypad.h"
 #include "display.h"
-#include "ServoMotor.h"
+
+#include "DHT11.h"
+
 
 //=====[Declaration of private defines]========================================
 
@@ -26,13 +28,15 @@
 
 DigitalOut incorrectCodeLed(LED3);
 DigitalOut systemBlockedLed(LED2);
+DHT11 humidity_sensor(A3);
+
+
 
 //=====[Declaration of external public global variables]=======================
 
 //=====[Declaration and initialization of public global variables]=============
-char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
-char pressed[5];
 
+char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
 
 //=====[Declaration and initialization of private global variables]============
 
@@ -51,11 +55,12 @@ static void systemBlockedIndicatorUpdate();
 static void userInterfaceDisplayInit();
 static void userInterfaceDisplayUpdate();
 
-
 //=====[Implementations of public functions]===================================
 
 void userInterfaceInit()
 {
+
+    
     incorrectCodeLed = OFF;
     systemBlockedLed = OFF;
     matrixKeypadInit( SYSTEM_TIME_INCREMENT_MS );
@@ -64,7 +69,6 @@ void userInterfaceInit()
 
 void userInterfaceUpdate()
 {
-
     userInterfaceMatrixKeypadUpdate();
     incorrectCodeIndicatorUpdate();
     systemBlockedIndicatorUpdate();
@@ -107,99 +111,8 @@ static void userInterfaceMatrixKeypadUpdate()
 {
     static int numberOfHashKeyReleased = 0;
     char keyReleased = matrixKeypadUpdate();
-
-    static int numTries = 3;
-    // static int numTries_init = 1;
-    static int pos_x = 11;
-    static int pressed_pos = 0;
-   
-
-
-    // if(numTries_init > 0)
-    // {
-    //      char str1[10];
-    //      sprintf(str1, "%d", numTries);
-    //      displayCharPositionWrite ( 10,1 );
-    //      displayStringWrite( str1);
-    //      numTries_init = numTries_init - 1;
-    // }
-
     
-    char str2[10];
-    sprintf(str2, "%d", numTries);
-    displayCharPositionWrite( 10,1 );
-    displayStringWrite( str2);
-
-
-    if(numTries <= 0){
-        
-            clear_screen();
-            while(true){
-            displayCharPositionWrite ( 0,0 );
-            displayStringWrite( "Please reset" );
-
-            displayCharPositionWrite ( 0,1 );
-            displayStringWrite("the system");
-            }
-    }
-
-    if(numTries > 0)
-    {
-    if( keyReleased != '\0' ) 
-    {
-
-  
-         pressed[4] = '\0';
-         pressed[pressed_pos] = keyReleased;
-         pressed_pos++;
-  
-
-         displayCharPositionWrite (pos_x, 0 );
-         char str3[2];
-         str3[0] = keyReleased;
-         str3[1] = '\0';
-         displayStringWrite(str3);
-         pos_x++;
-        
-         if((new_code_correct(pressed) == true) && (pressed[4] == '#' ))
-         {
-            clear_screen();
-            displayCharPositionWrite ( 0,0 );
-            displayStringWrite( "Gate opening" );
-            servo_update(pressed);
-            userInterfaceDisplayInit();
-            numTries = 3;
-            pressed_pos = 0;
-            pos_x = 11;
-            
-         }
-
-
-         if((new_code_correct(pressed) == false) && (pressed[4] != '\0')){
-             numTries = numTries -1;
-             pos_x = 11;
-             pressed_pos = 0;
-             char empty[5];
-             for(int i = 0; i <5; i++){
-                     empty[i] = ' ';
-                 }
-
-                 displayCharPositionWrite (11, 0 );
-                 displayStringWrite(empty);
-
-                 displayCharPositionWrite (12, 0 );
-                 displayStringWrite(empty);
-
-                 displayCharPositionWrite (13, 0 );
-                 displayStringWrite(empty);
-
-                 displayCharPositionWrite (14, 0 );
-                 displayStringWrite(empty);
-         }
-
-
-
-
+    if( keyReleased != '\0' ) {
 
         if( sirenStateRead() && !systemBlockedStateRead() ) {
             if( !incorrectCodeStateRead() ) {
@@ -223,65 +136,65 @@ static void userInterfaceMatrixKeypadUpdate()
         }
     }
 }
-}
-
 
 static void userInterfaceDisplayInit()
 {
-    displayInit();
- 
-
- 
-
-    displayCharPositionWrite ( 0,0 );
-    displayStringWrite( "Prss # to submit" );
-
-    displayCharPositionWrite ( 0,1 );
-    displayStringWrite( "code" );
-   
-    delay(3000);
-
-    clear_screen();
-    displayCharPositionWrite ( 0,0 );
-    displayStringWrite( "Enter code:" );
-
-    displayCharPositionWrite ( 0,1 );
-    displayStringWrite( "Num Tries:" );
-
+    displayInit( DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER );
      
+    displayCharPositionWrite ( 0,0 );
+    displayStringWrite( "Humidity:" );
+
+    // displayCharPositionWrite ( 0,1 );
+    // displayStringWrite( "Gas:" );
     
-    
-//     displayCharPositionWrite ( 0,1 );
-//     displayStringWrite( "Alarm:" );
- }
+    // displayCharPositionWrite ( 0,2 );
+    // displayStringWrite( "Alarm:" );
+}
 
 static void userInterfaceDisplayUpdate()
 {
     static int accumulatedDisplayTime = 0;
-    //char temperatureString[3] = "";
-  
+   
+    char humidity_string[5] = "";
+
     
     if( accumulatedDisplayTime >=
         DISPLAY_REFRESH_TIME_MS ) {
-
+        
+        int humidity;
         accumulatedDisplayTime = 0;
+        
+        //int humidity = humidity_sensor.readHumidity(); // read the humidity value from the sensor
 
-        // sprintf(temperatureString, "%.0f", temperatureSensorReadCelsius());
-        // displayCharPositionWrite ( 4,0 );
-        // displayStringWrite( temperatureString );
+   
 
-
+     
+        humidity = humidity_sensor.readData(); //reads error code from sensor
+    
+    
+        
+        sprintf(humidity_string, "%d", humidity); // convert the humidity value to a string
         
 
-  
+        displayCharPositionWrite(10, 0);
+        displayStringWrite(humidity_string);
+        
+        displayCharPositionWrite(13, 0);
+        displayStringWrite("%");
+      
 
+        // displayCharPositionWrite ( 14,0 );
+        // displayStringWrite( "'C" );
 
+        // displayCharPositionWrite ( 4,1 );
 
+        // if ( gasDetectorStateRead() ) {
+        //     displayStringWrite( "Detected    " );
         // } else {
-        //     displayStringWrite( "ND" );
+        //     displayStringWrite( "Not Detected" );
         // }
 
-        // displayCharPositionWrite ( 6,1 );
+        // displayCharPositionWrite ( 6,2 );
         
         // if ( sirenStateRead() ) {
         //     displayStringWrite( "ON " );
@@ -295,7 +208,6 @@ static void userInterfaceDisplayUpdate()
     } 
 }
 
-
 static void incorrectCodeIndicatorUpdate()
 {
     incorrectCodeLed = incorrectCodeStateRead();
@@ -305,4 +217,3 @@ static void systemBlockedIndicatorUpdate()
 {
     systemBlockedLed = systemBlockedState;
 }
-
