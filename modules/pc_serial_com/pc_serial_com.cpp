@@ -13,6 +13,8 @@
 #include "gas_sensor.h"
 #include "event_log.h"
 
+#include "matrix_keypad.h"
+
 //=====[Declaration of private defines]========================================
 
 //=====[Declaration of private data types]=====================================
@@ -59,6 +61,8 @@ static void commandShowCurrentTemperatureInFahrenheit();
 static void commandSetDateAndTime();
 static void commandShowDateAndTime();
 static void commandShowStoredEvents();
+
+static void commandShowCode(); //new
 
 //=====[Implementations of public functions]===================================
 
@@ -116,6 +120,19 @@ void pcSerialComCodeCompleteWrite( bool state )
 
 //=====[Implementations of private functions]==================================
 
+static void commandShowCode(){ //new
+    char* codeASCII = returnCode();
+    char output[CODE_NUMBER_OF_KEYS];
+    for (int i = 0; i < CODE_NUMBER_OF_KEYS; i++) {
+        output[i] = codeASCII[i];
+    }
+    char* code = output;
+
+    pcSerialComStringWrite("Current passcode is: ");
+    pcSerialComStringWrite(code);
+    pcSerialComStringWrite( "\r\n");
+}
+
 static void pcSerialComStringRead( char* str, int strLength )
 {
     int strIndex;
@@ -166,6 +183,9 @@ static void pcSerialComCommandUpdate( char receivedChar )
         case 's': case 'S': commandSetDateAndTime(); break;
         case 't': case 'T': commandShowDateAndTime(); break;
         case 'e': case 'E': commandShowStoredEvents(); break;
+        case 'p': case 'P': commandShowCode(); break; //new
+   
+
         default: availableCommands(); break;
     } 
 }
@@ -183,6 +203,7 @@ static void availableCommands()
     pcSerialComStringWrite( "Press 's' or 'S' to set the date and time\r\n" );
     pcSerialComStringWrite( "Press 't' or 'T' to get the date and time\r\n" );
     pcSerialComStringWrite( "Press 'e' or 'E' to get the stored events\r\n" );
+    pcSerialComStringWrite( "Press 'p' or 'P' to get the pass code\r\n" ); //new
     pcSerialComStringWrite( "\r\n" );
 }
 

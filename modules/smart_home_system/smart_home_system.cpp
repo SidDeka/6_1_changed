@@ -9,6 +9,9 @@
 #include "fire_alarm.h"
 #include "pc_serial_com.h"
 #include "event_log.h"
+#include "ServoMotor.h"
+
+#include "matrix_keypad.h"
 
 //=====[Declaration of private defines]========================================
 
@@ -31,6 +34,9 @@ void smartHomeSystemInit()
     userInterfaceInit();
     fireAlarmInit();
     pcSerialComInit();
+    servo_init();
+    //matrixKeypadInit(10);
+
 }
 
 void smartHomeSystemUpdate()
@@ -39,6 +45,7 @@ void smartHomeSystemUpdate()
     fireAlarmUpdate();    
     pcSerialComUpdate();
     eventLogUpdate();
+ 
     delay(SYSTEM_TIME_INCREMENT_MS);
 }
 

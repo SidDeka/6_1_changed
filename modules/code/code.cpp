@@ -10,7 +10,7 @@
 #include "date_and_time.h"
 #include "temperature_sensor.h"
 #include "gas_sensor.h"
-#include "matrix_keypad.h"
+//#include "matrix_keypad.h"
 
 //=====[Declaration of private defines]========================================
 
@@ -22,6 +22,7 @@
 
 extern char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
 extern char codeSequenceFromPcSerialCom[CODE_NUMBER_OF_KEYS];
+
 
 //=====[Declaration and initialization of private global variables]============
 
@@ -87,6 +88,20 @@ bool codeMatchFrom( codeOrigin_t codeOrigin )
     return codeIsCorrect;
 }
 
+bool new_code_correct(char arr[]){
+    bool code_correct = true;
+    for(int i = 0; i < 4; i++){
+        if (arr[i] != codeSequence[i]){
+            code_correct = false;
+        }
+    }
+    return code_correct;
+}
+
+char* returnCode(){
+    return codeSequence;
+}
+
 //=====[Implementations of private functions]==================================
 
 static bool codeMatch( char* codeToCompare )
@@ -106,3 +121,4 @@ static void codeDeactivate()
     incorrectCodeStateWrite(OFF);
     numberOfIncorrectCodes = 0;
 }
+
